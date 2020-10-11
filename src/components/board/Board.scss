@@ -1,0 +1,35 @@
+@mixin base-square {
+    height: 96px;
+    width: 96px;
+    text-align: center;
+}
+
+@mixin white-square {
+    @include base-square;
+    background-color: white;
+}
+
+@mixin grey-square {
+    @include base-square;
+    background-color: lightgrey;
+}
+
+tr:nth-child(even) {
+    > td:nth-child(even) {
+        @include white-square;
+    }
+
+    > td:nth-child(odd) {
+        @include grey-square;
+    }
+}
+
+tr:nth-child(odd) {
+    > td:nth-child(even) {
+        @include grey-square;
+    }
+
+    > td:nth-child(odd) {
+        @include white-square;
+    }
+}
