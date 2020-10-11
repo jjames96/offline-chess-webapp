@@ -1,6 +1,7 @@
 @mixin base-square {
     height: 96px;
     width: 96px;
+    font-size: 48px;
     text-align: center;
 }
 
@@ -32,4 +33,12 @@ tr:nth-child(odd) {
     > td:nth-child(odd) {
         @include white-square;
     }
+}
+
+td {
+    cursor: not-allowed;
+}
+
+td.has-piece {
+    cursor: pointer;
 }
