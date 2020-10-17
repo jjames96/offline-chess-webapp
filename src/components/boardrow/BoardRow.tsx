@@ -1,22 +1,16 @@
 import React from 'react';
-import { ChessPiece } from '../../pieces/Pieces';
+import { getBoardLayout } from '../board/Board';
+import { BoardPiece } from '../boardpiece/BoardPiece';
 
 interface BoardRowProps {
-    pieces: ChessPiece[];
+    rowNumber: number;
 }
-
-const getTableItemFromBoardPiece = (piece: ChessPiece) => {
-    const className = piece !== ChessPiece.NULL ? "has-piece" : undefined;
-    const pieceString = piece !== ChessPiece.NULL ? String.fromCharCode(piece) : "";
-
-    return <td className={className}>{pieceString}</td>;
-};
 
 export const BoardRow: React.FC<BoardRowProps> = (props: BoardRowProps) => {
     return (
         <tr>
-            {props.pieces.map(piece => {
-                return (getTableItemFromBoardPiece(piece));
+            {getBoardLayout()[props.rowNumber].map((_piece, index) => {
+                return (<BoardPiece key={index} boardRow={props.rowNumber} boardColumn={index} />);
             })}
         </tr>
     );
