@@ -39,10 +39,14 @@ td {
     cursor: not-allowed;
 }
 
+td:hover {
+    box-shadow: 0px 0px 0px 4px grey inset;
+}
+
 td.has-piece {
     cursor: pointer;
 }
 
 td.is-selected {
-    box-shadow: 0px 0px 0px 4px lime inset;
+    box-shadow: 0px 0px 0px 4px lime inset !important;
 }

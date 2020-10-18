@@ -1,34 +1,55 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ChessPiece } from '../../pieces/Pieces';
-import { getBoardLayout, getSelectedPiecePosition, setSelectedPiecePosition } from '../board/Board';
+import { getBoardLayout, getSelectedPiece, moveSelectedPiece, setSelectedPiece, setSelectedPiecePosition } from '../board/Board';
 
 interface BoardPieceProps {
     boardRow: number;
     boardColumn: number;
 }
 
-export const BoardPiece: React.FC<BoardPieceProps> = (props: BoardPieceProps) => {
-    const [isSelected, setIsSelected] = useState(false);
+interface BoardPieceState {
+    isSelected: boolean;
+}
 
-    const onClick = () => {
-        if (getSelectedPiecePosition()) {
-            // A piece is already selected so ignore this for now
+export class BoardPiece extends React.Component<BoardPieceProps, BoardPieceState> {
+    constructor(props: BoardPieceProps) {
+        super(props);
+        this.state = { isSelected: false };
+    }
+
+    onClick = () => {
+        const currentSelectedPiece = getSelectedPiece();
+
+        // If no piece is currently selected then select this piece
+        if (!currentSelectedPiece) {
+            setSelectedPiece(this);
+            setSelectedPiecePosition([this.props.boardRow, this.props.boardColumn]);
+            this.setState({ isSelected: true });
             return;
         }
 
-        setSelectedPiecePosition([props.boardRow, props.boardColumn]);
-        setIsSelected(true);
+        // Else if we've clicked on the currently selected piece, then deselect it
+        if (currentSelectedPiece === this) {
+            setSelectedPiece(null);
+            setSelectedPiecePosition(null);
+            this.setState({ isSelected: false });
+            return;
+        }
+
+        moveSelectedPiece([this.props.boardRow, this.props.boardColumn]);
     };
 
-    const getTableItemFromBoardPiece = (piece: ChessPiece) => {
+    getTableItemFromBoardPiece = (piece: ChessPiece) => {
         const className = `
             ${piece !== ChessPiece.NULL ? 'has-piece' : ''}
-            ${isSelected ? 'is-selected' : ''}
+            ${this.state.isSelected && getSelectedPiece() === this ? 'is-selected' : ''}
         `;
         const pieceString = piece !== ChessPiece.NULL ? String.fromCharCode(piece) : '';
     
-        return <td onClick={onClick} className={className}>{pieceString}</td>;
+        return <td onClick={this.onClick} className={className}>{pieceString}</td>;
     };
     
-    return getTableItemFromBoardPiece(getBoardLayout()[props.boardRow][props.boardColumn]);
+    render() {
+        return this.getTableItemFromBoardPiece(getBoardLayout()[this.props.boardRow][this.props.boardColumn]);
+    }
 };
