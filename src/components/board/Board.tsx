@@ -5,17 +5,14 @@ import { BoardRow } from '../boardrow/BoardRow';
 import './Board.scss';
 
 const boardLayout = initialChessBoardLayout;
-// TODO these following values should be refactored into an interface
-let selectedPiece: BoardPiece | null = null;
-let selectedPiecePosition: [number, number] | null = null;
+let selectedPiece: SelectedPiece | null = null;
 
 export const getBoardLayout = () => boardLayout;
 export const getSelectedPiece = () => selectedPiece;
 
-export const setSelectedPiece = (piece: BoardPiece | null) => selectedPiece = piece;
-export const setSelectedPiecePosition = (position: [number, number] | null) => selectedPiecePosition = position;
+export const setSelectedPiece = (piece: SelectedPiece | null) => selectedPiece = piece;
 export const moveSelectedPiece = (moveToSquare: [number, number]) => {
-    if (!selectedPiece || !selectedPiecePosition) {
+    if (!selectedPiece) {
         return;
     }
 
@@ -23,12 +20,16 @@ export const moveSelectedPiece = (moveToSquare: [number, number]) => {
         return;
     }
 
-    boardLayout[moveToSquare[0]][moveToSquare[1]] = boardLayout[selectedPiecePosition[0]][selectedPiecePosition[1]];
-    boardLayout[selectedPiecePosition[0]][selectedPiecePosition[1]] = ChessPiece.NULL;
+    boardLayout[moveToSquare[0]][moveToSquare[1]] = boardLayout[selectedPiece.position[0]][selectedPiece.position[1]];
+    boardLayout[selectedPiece.position[0]][selectedPiece.position[1]] = ChessPiece.NULL;
 
     selectedPiece = null;
-    selectedPiecePosition = null;
 };
+
+interface SelectedPiece {
+    piece: BoardPiece;
+    position: [number, number];
+}
 
 interface BoardState {
     layout: ChessPiece[][];

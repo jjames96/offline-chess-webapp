@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChessPiece } from '../../pieces/Pieces';
-import { getBoardLayout, getSelectedPiece, moveSelectedPiece, setSelectedPiece, setSelectedPiecePosition } from '../board/Board';
+import { getBoardLayout, getSelectedPiece, moveSelectedPiece, setSelectedPiece } from '../board/Board';
 
 interface BoardPieceProps {
     boardRow: number;
@@ -21,17 +21,15 @@ export class BoardPiece extends React.Component<BoardPieceProps, BoardPieceState
         const currentSelectedPiece = getSelectedPiece();
 
         // If no piece is currently selected then select this piece
-        if (!currentSelectedPiece) {
-            setSelectedPiece(this);
-            setSelectedPiecePosition([this.props.boardRow, this.props.boardColumn]);
+        if (!currentSelectedPiece && getBoardLayout()[this.props.boardRow][this.props.boardColumn] !== ChessPiece.NULL) {
+            setSelectedPiece({ piece: this, position: [this.props.boardRow, this.props.boardColumn] });
             this.setState({ isSelected: true });
             return;
         }
 
         // Else if we've clicked on the currently selected piece, then deselect it
-        if (currentSelectedPiece === this) {
+        if (currentSelectedPiece?.piece === this) {
             setSelectedPiece(null);
-            setSelectedPiecePosition(null);
             this.setState({ isSelected: false });
             return;
         }
@@ -40,9 +38,10 @@ export class BoardPiece extends React.Component<BoardPieceProps, BoardPieceState
     };
 
     getTableItemFromBoardPiece = (piece: ChessPiece) => {
+        const currentSelectedPiece = getSelectedPiece()
         const className = `
             ${piece !== ChessPiece.NULL ? 'has-piece' : ''}
-            ${this.state.isSelected && getSelectedPiece() === this ? 'is-selected' : ''}
+            ${this.state.isSelected && currentSelectedPiece && currentSelectedPiece.piece === this ? 'is-selected' : ''}
         `;
         const pieceString = piece !== ChessPiece.NULL ? String.fromCharCode(piece) : '';
     
