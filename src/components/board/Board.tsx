@@ -1,5 +1,6 @@
 import React from 'react';
-import { ChessPiece, initialChessBoardLayout } from '../../pieces/Pieces';
+import BasePiece from '../../pieces/BasePiece';
+import { initialChessBoardLayout } from '../../pieces/Pieces';
 import { BoardPiece } from '../boardpiece/BoardPiece';
 import { BoardRow } from '../boardrow/BoardRow';
 import './Board.scss';
@@ -16,12 +17,12 @@ export const moveSelectedPiece = (moveToSquare: [number, number]) => {
         return;
     }
 
-    if (boardLayout[moveToSquare[0]][moveToSquare[1]] !== ChessPiece.NULL) {
+    if (boardLayout[moveToSquare[0]][moveToSquare[1]]) {
         return;
     }
 
     boardLayout[moveToSquare[0]][moveToSquare[1]] = boardLayout[selectedPiece.position[0]][selectedPiece.position[1]];
-    boardLayout[selectedPiece.position[0]][selectedPiece.position[1]] = ChessPiece.NULL;
+    boardLayout[selectedPiece.position[0]][selectedPiece.position[1]] = null;
 
     selectedPiece = null;
 };
@@ -32,14 +33,16 @@ interface SelectedPiece {
 }
 
 interface BoardState {
-    layout: ChessPiece[][];
+    layout: (BasePiece | null)[][];
 }
 
 export class Board extends React.Component<{}, BoardState> {
     constructor(props: {}) {
         super(props);
         this.state = { layout: getBoardLayout() };
+    }
 
+    componentDidMount() {
         setInterval(this.tick, 1000);
     }
 
